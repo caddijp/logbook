@@ -26,10 +26,9 @@ import static org.zalando.logbook.netty.Conditionals.runIf;
 @RequiredArgsConstructor
 public final class LogbookServerHandler extends ChannelDuplexHandler {
 
-    private final Sequence sequence = new Sequence(2);
-
     private final Logbook logbook;
 
+    private Sequence sequence;
     private Request request;
     private Response response;
     private RequestWritingStage requestStage;
@@ -39,6 +38,8 @@ public final class LogbookServerHandler extends ChannelDuplexHandler {
     public void channelRead(
             final ChannelHandlerContext context,
             final Object message) {
+
+        sequence = new Sequence(2);
 
         runIf(message, HttpRequest.class, httpRequest -> {
             this.request = new Request(context, REMOTE, httpRequest);
